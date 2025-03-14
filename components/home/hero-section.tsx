@@ -48,7 +48,7 @@ export default function HeroSection() {
           bg-linear-to-r from-slate-900 to-rose-500 hover:from-rose-500
            hover:to-slate-900 hover:no-underline font-bold shadow-lg transition-all duration-300"
       >
-        <Link href="#/pricing" className="flex gap-2 items-center">
+        <Link href="/#pricing" className="flex gap-2 items-center">
           <span>Try Saramsa</span>
           <ArrowRight className="w-6 h-6 animate-pulse" />
         </Link>
