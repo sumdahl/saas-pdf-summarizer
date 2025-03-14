@@ -1,10 +1,12 @@
-"use client";
-import { Button } from "@/components/ui/button";
-
+import HeroSection from "@/components/home/hero-section";
 export default function Home() {
   return (
-    <div className="container">
-      <Button> Shadcn Button</Button>
+    <div className="relative w-full">
+      <HeroSection />
+      {/* <DemoSection /> */}
+      {/* <HowItWorksSection /> */}
+      {/* <PricingSection /> */}
+      {/* <CTASection /> */}
     </div>
   );
 }
