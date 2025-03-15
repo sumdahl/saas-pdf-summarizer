@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { Source_Sans_3 as FontSans } from "next/font/google";
 import "./globals.css";
+import { ClerkProvider } from "@clerk/nextjs";
 import Header from "@/components/common/header";
 import Footer from "@/components/common/footer";
-import { ClerkProvider } from "@clerk/nextjs";
-
+import { Toaster } from "sonner";
 const fontSans = FontSans({
   variable: "--font-sans",
   subsets: ["latin"],
@@ -31,6 +31,7 @@ export default function RootLayout({
             <main className="flex-1">{children}</main>
             <Footer />
           </div>
+          <Toaster position="top-right" richColors expand duration={3000} />
         </body>
       </html>
     </ClerkProvider>
