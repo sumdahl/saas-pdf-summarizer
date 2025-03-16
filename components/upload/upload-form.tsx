@@ -5,7 +5,7 @@ import { z } from "zod";
 const SIZE = 20 * 1024 * 1024; // 20MB
 import { toast } from "sonner";
 import { generateSummarizedPdf } from "@/actions/upload-action";
-
+import { useRef, useState } from "react";
 const formSchema = z.object({
   file: z
     .instanceof(File, { message: "Invalid file" })
@@ -18,6 +18,8 @@ const formSchema = z.object({
 });
 
 export default function UploadForm() {
+  const formRef = useRef<HTMLFormElement>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const { startUpload, routeConfig } = useUploadThing("pdfUploader", {
     onClientUploadComplete: () => {
       toast.dismiss(); // Dismiss any existing loading toasts
@@ -45,59 +47,78 @@ export default function UploadForm() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const file = formData.get("file") as File;
-
-    const validatedFields = formSchema.safeParse({ file });
-
-    if (!validatedFields.success) {
-      toast.error("Invalid file", {
-        description:
-          validatedFields.error.flatten().fieldErrors.file?.[0] ??
-          "Invalid file",
-      });
-      return;
-    }
-
     try {
-      const response = await startUpload([file]);
+      setIsLoading(true);
+      const formData = new FormData(e.currentTarget);
+      const file = formData.get("file") as File;
 
-      if (!response) {
-        toast.error("Upload failed", {
-          description: "Unable to upload your file. Please try again later.",
+      const validatedFields = formSchema.safeParse({ file });
+
+      if (!validatedFields.success) {
+        toast.error("Invalid file", {
+          description:
+            validatedFields.error.flatten().fieldErrors.file?.[0] ??
+            "Invalid file",
         });
+        setIsLoading(false);
         return;
       }
-      const summary = await generateSummarizedPdf([
-        {
-          serverData: {
-            userId: response[0].serverData.userId,
-            file: {
-              url: response[0].serverData.file.url,
-              name: response[0].serverData.file.name,
+
+      try {
+        const response = await startUpload([file]);
+
+        if (!response) {
+          toast.error("Upload failed", {
+            description: "Unable to upload your file. Please try again later.",
+          });
+          setIsLoading(false);
+          return;
+        }
+        const summaryResult = await generateSummarizedPdf([
+          {
+            serverData: {
+              userId: response[0].serverData.userId,
+              file: {
+                url: response[0].serverData.file.url,
+                name: response[0].serverData.file.name,
+              },
             },
           },
-        },
-      ]);
-      console.log(summary);
-    } catch (error) {
-      toast.error("Unexpected error", {
-        description: "Something went wrong. Please try again later.",
-      });
-    }
+        ]);
+        console.log(summaryResult);
 
-    //validating the fields
-    // schema with zod
-    //upload the file to uploadThing
-    //parse the pdf using lang chain
-    //summarize the pdf using OpenAI
-    //save the summary to the database
-    //redirect to the [id] summary page
+        const { data = null, message = null } = summaryResult || {};
+        if (data) {
+          toast.dismiss();
+          toast.success("📄 Saving PDF...", {
+            description: "Hang tight! We're saving your PDF...💾",
+          });
+          formRef.current?.reset();
+          //save the summary to the database
+          //if data.summary(){
+          //save the summary to the database
+          //redirect to the [id] summary page
+        }
+      } catch (error) {
+        setIsLoading(false);
+        toast.error("Unexpected error", {
+          description: "Something went wrong. Please try again later.",
+        });
+      }
+    } catch (error) {
+      console.error("Error occurred", error);
+      formRef.current?.reset();
+      setIsLoading(false);
+    }
   };
 
   return (
     <div className="flex flex-col gap-8 w-full max-w-2xl mx-auto">
-      <UploadFormInput onSubmit={handleSubmit} />
+      <UploadFormInput
+        isLoading={isLoading}
+        ref={formRef}
+        onSubmit={handleSubmit}
+      />
     </div>
   );
 }

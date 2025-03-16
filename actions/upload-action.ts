@@ -1,5 +1,6 @@
 "use server";
 import { fetchAndExtractPdfText } from "@/lib/langchain";
+import { generateSummaryFromOpenAI } from "@/lib/openai";
 
 export async function generateSummarizedPdf(
   uploadResponse: [
@@ -37,7 +38,20 @@ export async function generateSummarizedPdf(
   }
   try {
     const pdfText = await fetchAndExtractPdfText(pdfUrl);
-    console.log(pdfText);
+    try {
+      const summary = await generateSummaryFromOpenAI(pdfText);
+      if (!summary) {
+        return {
+          success: false,
+          message: "Unable to summarize pdf text.",
+          data: null,
+        };
+      }
+      console.log(summary);
+    } catch (error) {
+      console.error(error);
+      //move to GEMINI api
+    }
   } catch (error) {
     return {
       success: false,

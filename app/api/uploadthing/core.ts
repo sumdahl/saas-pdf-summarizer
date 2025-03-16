@@ -19,9 +19,12 @@ export const ourFileRouter = {
 
       return {
         userId: metadata.userId,
-        file: file,
-        // fileUrl: file.ufsUrl,
-        // fileName: file.name,
+        file: {
+          url: file.ufsUrl,
+          name: file.name,
+          size: file.size,
+          key: file.key,
+        },
       };
     }),
 } satisfies FileRouter;
