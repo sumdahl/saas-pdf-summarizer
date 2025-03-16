@@ -4,6 +4,7 @@ import UploadFormInput from "./upload-form-input";
 import { z } from "zod";
 const SIZE = 20 * 1024 * 1024; // 20MB
 import { toast } from "sonner";
+import { generateSummarizedPdf } from "@/actions/upload-action";
 
 const formSchema = z.object({
   file: z
@@ -67,6 +68,18 @@ export default function UploadForm() {
         });
         return;
       }
+      const summary = await generateSummarizedPdf([
+        {
+          serverData: {
+            userId: response[0].serverData.userId,
+            file: {
+              url: response[0].serverData.file.url,
+              name: response[0].serverData.file.name,
+            },
+          },
+        },
+      ]);
+      console.log(summary);
     } catch (error) {
       toast.error("Unexpected error", {
         description: "Something went wrong. Please try again later.",
