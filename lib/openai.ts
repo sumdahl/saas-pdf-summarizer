@@ -28,6 +28,13 @@ export async function generateSummaryFromOpenAI(pdfText: string) {
     if (error?.status === 429) {
       //move to GEMINI api
       throw new Error("RATE_LIMIT_EXCEEDED");
+    } else if (error?.code === "string_above_max_length") {
+      throw new Error("CONTENT_TOO_LONG");
+    } else if (
+      error?.message?.includes("maximum context length") ||
+      error?.message?.includes("token limit")
+    ) {
+      throw new Error("DOCUMENT_TOO_LONG");
     }
     throw error;
   }

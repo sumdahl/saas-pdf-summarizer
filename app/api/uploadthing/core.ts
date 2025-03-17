@@ -14,9 +14,6 @@ export const ourFileRouter = {
       return { userId: user.id }; // Ensure the return type matches expected metadata
     })
     .onUploadComplete(async ({ metadata, file }) => {
-      console.log("File uploaded successfully", metadata.userId);
-      console.log("file url:", file.ufsUrl);
-
       return {
         userId: metadata.userId,
         file: {

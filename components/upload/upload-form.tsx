@@ -39,6 +39,7 @@ export default function UploadForm() {
       });
     },
     onUploadBegin: (file) => {
+      console.log("Uploading file", file);
       toast.loading("Starting upload...", {
         description: `Uploading ${file}`,
       });
@@ -99,11 +100,23 @@ export default function UploadForm() {
           //save the summary to the database
           //redirect to the [id] summary page
         }
-      } catch (error) {
+      } catch (error: any) {
         setIsLoading(false);
-        toast.error("Unexpected error", {
-          description: "Something went wrong. Please try again later.",
-        });
+        if (error.message === "DOCUMENT_TOO_LONG") {
+          toast.error("Document too long", {
+            description:
+              "Please try with a shorter document or split it into smaller parts.",
+          });
+        } else if (error.message === "CONTENT_TOO_LONG") {
+          toast.error("Content too long", {
+            description:
+              "This document exceeds our maximum length limit. Please try with a shorter document or split it into smaller parts.",
+          });
+        } else {
+          toast.error("Unexpected error", {
+            description: "Something went wrong. Please try again later.",
+          });
+        }
       }
     } catch (error) {
       console.error("Error occurred", error);
