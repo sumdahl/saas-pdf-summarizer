@@ -4,7 +4,10 @@ import UploadFormInput from "./upload-form-input";
 import { z } from "zod";
 const SIZE = 20 * 1024 * 1024; // 20MB
 import { toast } from "sonner";
-import { generateSummarizedPdf } from "@/actions/upload-action";
+import {
+  generateSummarizedPdf,
+  storePdfSummaryAction,
+} from "@/actions/upload-action";
 import { useRef, useState } from "react";
 const formSchema = z.object({
   file: z
@@ -90,14 +93,27 @@ export default function UploadForm() {
 
         const { data = null, message = null } = summaryResult || {};
         if (data) {
+          let storedSummary: any;
           toast.dismiss();
           toast.success("📄 Saving PDF...", {
             description: "Hang tight! We're saving your PDF...💾",
           });
+
+          //save the summary to the database
+
+          if (data.summary) {
+            storedSummary = await storePdfSummaryAction({
+              summary: data.summary,
+              fileUrl: response[0].serverData.file.url,
+              title: data.title,
+              fileName: file.name,
+            });
+          }
+          toast.success("✨ Summary Generated!", {
+            description:
+              "Your PDF has been successfully summarized! and saved ✨",
+          });
           formRef.current?.reset();
-          //save the summary to the database
-          //if data.summary(){
-          //save the summary to the database
           //redirect to the [id] summary page
         }
       } catch (error: any) {
