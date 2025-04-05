@@ -2,13 +2,16 @@
 import { useUploadThing } from "@/utils/uploadthing";
 import UploadFormInput from "./upload-form-input";
 import { z } from "zod";
-const SIZE = 20 * 1024 * 1024; // 20MB
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import {
   generateSummarizedPdf,
   storePdfSummaryAction,
 } from "@/actions/upload-action";
 import { useRef, useState } from "react";
+
+const SIZE = 20 * 1024 * 1024; // 20MB
+
 const formSchema = z.object({
   file: z
     .instanceof(File, { message: "Invalid file" })
@@ -23,6 +26,7 @@ const formSchema = z.object({
 export default function UploadForm() {
   const formRef = useRef<HTMLFormElement>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
   const { startUpload, routeConfig } = useUploadThing("pdfUploader", {
     onClientUploadComplete: () => {
       toast.dismiss(); // Dismiss any existing loading toasts
@@ -116,8 +120,8 @@ export default function UploadForm() {
           });
           formRef.current?.reset();
           setIsLoading(false);
+          router.push(`/summaries/${storedSummary.data.id}`);
           //redirect to the [id] summary page
-          // setIsLoading(false);
         }
       } catch (error: any) {
         setIsLoading(false);
@@ -140,6 +144,7 @@ export default function UploadForm() {
     } catch (error) {
       console.error("Error occurred", error);
       formRef.current?.reset();
+    } finally {
       setIsLoading(false);
     }
   };
