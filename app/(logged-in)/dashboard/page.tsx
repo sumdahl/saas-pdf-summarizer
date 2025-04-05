@@ -7,6 +7,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import Link from "next/link";
 import React from "react";
 import { redirect } from "next/navigation";
+import EmptySummaryState from "@/components/summaries/empty-summary-state";
 
 export default async function DashboardPage() {
   const user = await currentUser();
@@ -65,11 +66,15 @@ export default async function DashboardPage() {
               for unlimited uploads.
             </div>
           </div>
-          <div className="grid grid-cols-1 gap-4 sm:gap-6 sm:px-0 md:grid-cols-2 lg:grid-cols-3">
-            {summaries.map((summary) => (
-              <SummaryCard key={summary.id} summary={summary} />
-            ))}
-          </div>
+          {summaries.length === 0 ? (
+            <EmptySummaryState />
+          ) : (
+            <div className="grid grid-cols-1 gap-4 sm:gap-6 sm:px-0 md:grid-cols-2 lg:grid-cols-3">
+              {summaries.map((summary) => (
+                <SummaryCard key={summary.id} summary={summary} />
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </main>
