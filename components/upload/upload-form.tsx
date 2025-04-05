@@ -115,6 +115,7 @@ export default function UploadForm() {
               "Your PDF has been successfully summarized! and saved ✨",
           });
           formRef.current?.reset();
+          setIsLoading(false);
           //redirect to the [id] summary page
           // setIsLoading(false);
         }
