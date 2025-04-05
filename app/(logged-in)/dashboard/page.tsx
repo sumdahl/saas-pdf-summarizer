@@ -33,7 +33,7 @@ export default async function DashboardPage() {
                 Your Summaries
               </h1>
               <p className="text-gray-600">
-                Transform your PDFs into concise, insights
+                Transform your PDFs into concise, actionable insights.
               </p>
             </div>
             <Button

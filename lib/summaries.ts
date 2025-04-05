@@ -9,6 +9,7 @@
 
 import { getDatabaseConnection } from "./neondb";
 import { Summary } from "@/types/summary";
+
 export async function getSummaries(userId: string): Promise<Summary[]> {
   const sql = await getDatabaseConnection();
   const summaries =

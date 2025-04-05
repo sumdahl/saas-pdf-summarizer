@@ -9,3 +9,8 @@ export interface Summary {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface DeleteSummaryInterface {
+  summaryId: string;
+  // onDelete?: (id: string) => void;
+}
