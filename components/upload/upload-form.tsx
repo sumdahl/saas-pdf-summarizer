@@ -102,6 +102,7 @@ export default function UploadForm() {
           //save the summary to the database
 
           if (data.summary) {
+            console.log(data.summary);
             storedSummary = await storePdfSummaryAction({
               summary: data.summary,
               fileUrl: response[0].serverData.file.url,
@@ -115,6 +116,7 @@ export default function UploadForm() {
           });
           formRef.current?.reset();
           //redirect to the [id] summary page
+          // setIsLoading(false);
         }
       } catch (error: any) {
         setIsLoading(false);
