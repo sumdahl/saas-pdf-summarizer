@@ -192,6 +192,29 @@
   }
 }
 
+/* Add this to your global stylesheet or tailwind.css */
+@keyframes color-change {
+  0% {
+    color: #fda4af; /* text-rose-300 */
+  }
+  25% {
+    color: #fb7185; /* text-rose-400 */
+  }
+  50% {
+    color: #f43f5e; /* text-rose-500 */
+  }
+  75% {
+    color: #e11d48; /* text-rose-600 */
+  }
+  100% {
+    color: #9b2c2c; /* text-rose-700 */
+  }
+}
+
+.animate-text-color {
+  animation: color-change 12s ease-in-out infinite;
+}
+
 .animate-gradient-x {
   animation: gradient-x 3s ease infinite;
 }
