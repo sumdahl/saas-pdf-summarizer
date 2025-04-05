@@ -7,28 +7,18 @@ import { formatFileNameAsTitle } from "@/utils/formatFile";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
 
-interface PDFSummaryTypes {
-  userId?: string;
-  fileUrl: string;
-  summary: string;
-  title: string;
-  fileName: string;
-}
+import {
+  PDFSummaryTypes,
+  SavedSummary,
+  UploadResponseItem,
+  SummaryResult,
+  StoreSummaryResult,
+} from "@/types/summary-actions";
 
 export async function generateSummarizedPdf(
-  uploadResponse: [
-    {
-      serverData: {
-        userId: string;
-        file: {
-          url: string;
-          name: string;
-        };
-      };
-    }
-  ]
-) {
-  if (!uploadResponse) {
+  uploadResponse: UploadResponseItem[]
+): Promise<SummaryResult> {
+  if (!uploadResponse || uploadResponse.length === 0) {
     return {
       success: false,
       message: "File upload failed.",
@@ -80,7 +70,6 @@ export async function generateSummarizedPdf(
       if (error instanceof Error && error.message === "RATE_LIMIT_EXCEEDED") {
         try {
           const summary = await generateSummaryFromGemini(pdfText);
-          console.log(summary);
           const formattedFileName = formatFileNameAsTitle(pdfName);
           return {
             success: true,
@@ -95,6 +84,7 @@ export async function generateSummarizedPdf(
           throw new Error("Unable to generate summary with AI");
         }
       }
+      throw error;
     }
   } catch (error) {
     return {
@@ -111,22 +101,33 @@ export async function savePdfSummary({
   summary,
   title,
   fileName,
-}: PDFSummaryTypes) {
+}: PDFSummaryTypes): Promise<SavedSummary> {
   try {
     const sql = await getDatabaseConnection();
-    await sql`INSERT INTO pdf_summaries (
-    user_id,
-    original_file_url,
-    summary_text,
-    title,
-    file_name
-) VALUES (
-   ${userId},
-   ${fileUrl},
-   ${summary},
-   ${title},
-   ${fileName}
-);`; // Corrected SQL query
+    const result = await sql`
+      INSERT INTO pdf_summaries (
+        user_id,
+        original_file_url,
+        summary_text,
+        title,
+        file_name
+      ) VALUES (
+        ${userId},
+        ${fileUrl},
+        ${summary},
+        ${title},
+        ${fileName}
+      ) RETURNING id, summary_text`;
+
+    // More explicit type assertion
+    const resultArray = result as unknown as SavedSummary[];
+    const savedSummary = resultArray[0];
+
+    if (!savedSummary) {
+      throw new Error("No data returned from the database");
+    }
+
+    return savedSummary;
   } catch (error) {
     console.error("Error saving PDF summary to database", error);
     throw error;
@@ -138,8 +139,8 @@ export async function storePdfSummaryAction({
   summary,
   title,
   fileName,
-}: PDFSummaryTypes) {
-  let savedSummary: any;
+}: Omit<PDFSummaryTypes, "userId">): Promise<StoreSummaryResult> {
+  let savedSummary: SavedSummary;
   try {
     const { userId } = await auth();
 
@@ -174,14 +175,14 @@ export async function storePdfSummaryAction({
     };
   }
 
-  //Revalidate the cache
-  revalidatePath(`/summaries/${savedSummary.id}`);
+  // Revalidate the cache
+  revalidatePath(`/summaries/${savedSummary.id}`); //Individual summary page
   return {
     success: true,
     message: "PDF summary saved to database.",
     data: {
       id: savedSummary.id,
-      summary,
+      summary: savedSummary.summary_text,
     },
   };
 }
