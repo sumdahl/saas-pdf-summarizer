@@ -12,5 +12,5 @@ export interface Summary {
 
 export interface DeleteSummaryInterface {
   summaryId: string;
-  onDelete?: (id: string) => void;
+  // onDelete?: (id: string) => void;
 }
