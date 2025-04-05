@@ -5,6 +5,7 @@ import { getDatabaseConnection } from "@/lib/neondb";
 import { generateSummaryFromOpenAI } from "@/lib/openai";
 import { formatFileNameAsTitle } from "@/utils/formatFile";
 import { auth } from "@clerk/nextjs/server";
+import { revalidatePath } from "next/cache";
 
 interface PDFSummaryTypes {
   userId?: string;
@@ -163,14 +164,6 @@ export async function storePdfSummaryAction({
         message: "Failed to save PDF summary to database. Please try again.",
       };
     }
-
-    return {
-      success: true,
-      message: "PDF summary saved to database.",
-      data: {
-        summary,
-      },
-    };
   } catch (error) {
     return {
       success: false,
@@ -180,4 +173,15 @@ export async function storePdfSummaryAction({
           : "Failed to save PDF summary to database.",
     };
   }
+
+  //Revalidate the cache
+  revalidatePath(`/summaries/${savedSummary.id}`);
+  return {
+    success: true,
+    message: "PDF summary saved to database.",
+    data: {
+      id: savedSummary.id,
+      summary,
+    },
+  };
 }
