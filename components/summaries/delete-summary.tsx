@@ -1,7 +1,7 @@
 "use client";
 import { Loader2, Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
-import { deleteSummary } from "@/actions/summary-action";
+import { deleteSummaryAction } from "@/actions/summary-action";
 import { DeleteSummaryInterface } from "@/types/summary";
 
 import {
@@ -13,18 +13,21 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { toast } from "sonner";
 import { useState } from "react";
 
-export default function DeleteSummary({
-  summaryId,
-}: // onDelete,
-DeleteSummaryInterface) {
+export default function DeleteSummary({ summaryId }: DeleteSummaryInterface) {
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const handleDelete = async () => {
     setIsLoading(true);
-    await deleteSummary(summaryId);
+    const result = await deleteSummaryAction(summaryId);
+    if (!result.success) {
+      toast.error("Error", {
+        description: "Failed to delete summary",
+      });
+    }
     // onDelete?.(summaryId);
     setIsLoading(false);
     setOpen(false);
