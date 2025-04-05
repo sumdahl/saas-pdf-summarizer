@@ -1,5 +1,5 @@
 "use client";
-import { Loader2, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import { Button } from "../ui/button";
 import { deleteSummaryAction } from "@/actions/summary-action";
 import { DeleteSummaryInterface } from "@/types/summary";
@@ -18,11 +18,10 @@ import { useState, useTransition } from "react";
 
 export default function DeleteSummary({ summaryId }: DeleteSummaryInterface) {
   const [open, setOpen] = useState(false);
-  // const [isLoading, setIsLoading] = useState(false);
+
   const [isPending, startTransaction] = useTransition();
 
   const handleDelete = async () => {
-    // setIsLoading(true);
     startTransaction(async () => {
       const result = await deleteSummaryAction(summaryId);
       if (!result.success) {
@@ -30,7 +29,7 @@ export default function DeleteSummary({ summaryId }: DeleteSummaryInterface) {
           description: "Failed to delete summary",
         });
       }
-      // setIsLoading(false);
+
       setOpen(false);
     });
   };
@@ -65,16 +64,10 @@ export default function DeleteSummary({ summaryId }: DeleteSummaryInterface) {
             Cancel
           </Button>
           <Button
-            // disabled={isLoading}
             onClick={handleDelete}
             variant="destructive"
             className="px-4 bg-gray-900 hover:bg-gray-600"
           >
-            {/* {isLoading ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              "Delete"
-            )} */}
             {isPending ? "Deleting..." : "Delete"}
           </Button>
         </DialogFooter>
