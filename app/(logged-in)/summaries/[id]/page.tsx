@@ -15,6 +15,8 @@ export default async function SummaryPage(props: {
   const summary = await getSummaryById(id);
   console.log("Date: ", summary?.createdAt);
 
+  const readingTime = Math.ceil(Number(summary?.word_count || 0) / 200);
+
   if (!summary) {
     notFound();
   }
@@ -27,9 +29,18 @@ export default async function SummaryPage(props: {
             <SummaryHeader
               title={summary.title}
               createdAt={summary.createdAt.toLocaleDateString()}
+              readtingTime={readingTime.toString()}
             />
           </div>
-          {summary.file_name && <SourceInfo fileName={summary.file_name} />}
+          {summary.file_name && (
+            <SourceInfo
+              fileName={summary.file_name}
+              originalFileUrl={summary.original_file_url}
+              title={summary.title}
+              summaryText={summary.summary_text}
+              createdAt={summary.createdAt.toLocaleDateString()}
+            />
+          )}
           <div className="relative mt-4 sm:mt-8 lg:mt-16">
             <div
               className="relative p-4 sm:p-6 lg:p-8
