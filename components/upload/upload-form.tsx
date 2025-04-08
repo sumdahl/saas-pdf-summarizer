@@ -9,6 +9,7 @@ import {
   storePdfSummaryAction,
 } from "@/actions/upload-action";
 import { useRef, useState } from "react";
+import { Search } from "lucide-react";
 
 const SIZE = 20 * 1024 * 1024; // 20MB
 
@@ -82,6 +83,16 @@ export default function UploadForm() {
           setIsLoading(false);
           return;
         }
+
+        // 🔄 Show a persistent toast while processing the PDF
+        const processingToastId = toast.loading(
+          // "🔍 Analyzing your document...",
+          "Analyzing your document...",
+          {
+            description: "This might take a few seconds. Please hold on...",
+            // icon: <Search className="h-4 w-4" />,
+          }
+        );
         const summaryResult = await generateSummarizedPdf([
           {
             serverData: {
@@ -93,6 +104,9 @@ export default function UploadForm() {
             },
           },
         ]);
+
+        toast.dismiss(processingToastId); // ✅ Dismiss once done
+
         console.log(summaryResult);
 
         const { data = null, message = null } = summaryResult || {};
