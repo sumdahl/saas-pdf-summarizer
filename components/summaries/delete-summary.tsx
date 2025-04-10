@@ -66,7 +66,7 @@ export default function DeleteSummary({ summaryId }: DeleteSummaryInterface) {
           <Button
             onClick={handleDelete}
             variant="destructive"
-            className="px-4 bg-gray-900 hover:bg-gray-600"
+            className="px-4 bg-rose-800 hover:bg-rose-500"
           >
             {isPending ? "Deleting..." : "Delete"}
           </Button>
