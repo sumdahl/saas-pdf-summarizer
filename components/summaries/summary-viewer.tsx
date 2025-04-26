@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import NavigationControls from "./navigation-controls";
 import ProgressBar from "./progress-bar";
 import ContentSection from "./content-section";
-import { parsedSection } from "@/lib/summary-helpter";
+import { parsedSection } from "@/utils/summary-helpter";
 
 const SectionTitle = ({ title }: { title: string }) => {
   return (

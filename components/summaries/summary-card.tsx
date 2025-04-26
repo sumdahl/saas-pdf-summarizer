@@ -2,7 +2,8 @@ import { FileText } from "lucide-react";
 import { Card } from "../ui/card";
 import DeleteSummary from "./delete-summary";
 import Link from "next/link";
-import { cn, formatFileNameAsTitle } from "@/lib/utils";
+import { cn } from "@/lib/cn";
+import { formatFileNameAsTitle } from "@/lib/utils";
 import { formatDistanceToNow } from "date-fns";
 
 const SummaryHeader = ({

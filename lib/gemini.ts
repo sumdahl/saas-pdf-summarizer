@@ -1,5 +1,5 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { SUMMARY_SYSTEM_PROMPT } from "./prompts";
+import { SUMMARY_SYSTEM_PROMPT } from "@/utils/prompts";
 
 type ApiKey = string | undefined;
 

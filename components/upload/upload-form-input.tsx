@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/cn";
 import { Loader2 } from "lucide-react";
 import { forwardRef } from "react";
 import { UploadFormInputProps } from "@/types/upload-form";

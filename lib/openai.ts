@@ -1,4 +1,4 @@
-import { SUMMARY_SYSTEM_PROMPT } from "./prompts";
+import { SUMMARY_SYSTEM_PROMPT } from "@/utils/prompts";
 import OpenAI from "openai";
 const client = new OpenAI({
   apiKey: process.env.OPENAI_SECRET_KEY,
