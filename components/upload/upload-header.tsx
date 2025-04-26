@@ -1,6 +1,6 @@
-import { Sparkles } from "lucide-react";
+import { Sparkles, FileUp } from "lucide-react";
 import { Badge } from "../ui/badge";
-
+import UploadDropzone from "./upload-dropzone";
 export default function UploadHeader() {
   return (
     <div className="flex flex-col items-center justify-center gap-6 text-center">
@@ -13,7 +13,7 @@ export default function UploadHeader() {
           className="relative px-6 py-2 text-base font-medium bg-white rounded-full
      group-hover:bg-gray-50 transition-colors hover:bg-rose-200"
         >
-          <Sparkles className="h-6 w-6 mr-2 text-rse-600 animate-pulse scale-175" />
+          <Sparkles className="h-6 w-6 mr-2 text-rose-600 animate-pulse scale-175" />
           <span>AI-Powered Content Summarizer</span>
         </Badge>
       </div>
@@ -29,8 +29,12 @@ export default function UploadHeader() {
         </span>
       </div>
       <div className="mt-2 text-lg leading-8 text-gray-600 max-w-2xl text-center">
-        <p>Upload your PDF's and let AI do the magic!✨</p>
+        <p className="flex items-center justify-center">
+          Upload your PDF's and let AI do the magic!{" "}
+          <Sparkles className="ml-2 h-4 w-6 text-rose-600 animate-pulse scale-125" />
+        </p>
       </div>
+      <UploadDropzone />
     </div>
   );
 }
