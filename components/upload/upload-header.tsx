@@ -13,7 +13,7 @@ export default function UploadHeader() {
           className="relative px-6 py-2 text-base font-medium bg-white rounded-full
      group-hover:bg-gray-50 transition-colors hover:bg-rose-200"
         >
-          <Sparkles className="h-6 w-6 mr-2 text-rse-600 animate-pulse" />
+          <Sparkles className="h-6 w-6 mr-2 text-rse-600 animate-pulse scale-175" />
           <span>AI-Powered Content Summarizer</span>
         </Badge>
       </div>

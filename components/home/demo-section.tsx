@@ -1,5 +1,11 @@
 import { Pizza } from "lucide-react";
-
+import SummaryViewer from "../summaries/summary-viewer";
+import { DEMO_SUMMARY } from "@/utils/dummy-data-demo";
+import { MotionDiv, MotionH3 } from "../common/motion-wrapper";
+import {
+  headingDemoVariants,
+  summaryViewerVariants,
+} from "@/utils/motion-constants";
 export default function DemoSection() {
   return (
     <section className="relative">
@@ -30,17 +36,30 @@ export default function DemoSection() {
             <Pizza className="w-8 h-8 text-rose-500" />
           </div>
           <div className="text-center mb-16">
-            <h3 className="font-bold text-3xl max-w-2xl mx-auto px-4 sm:px-6">
+            <MotionH3
+              variants={headingDemoVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              className="font-bold text-3xl max-w-2xl mx-auto px-4 sm:px-6"
+            >
               Watch how Saramsa transforms{" "}
               <span className="bg-linear-to-r from-rose-500 to-rose-700 bg-clip-text text-transparent">
                 this Next.js course PDF
               </span>{" "}
               into and easy-to-read summary!
-            </h3>
+            </MotionH3>
           </div>
           {/*summary section*/}
           <div className="flex justify-center items-center px-2 sm:px-4 lg:px-6">
-            {/*Summary viewer */}
+            <MotionDiv
+              variants={summaryViewerVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+            >
+              <SummaryViewer summary={DEMO_SUMMARY} />
+            </MotionDiv>
           </div>
         </div>
       </div>

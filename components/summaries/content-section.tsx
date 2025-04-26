@@ -1,5 +1,4 @@
-import { parseEmojiPoint, parsePoint } from "@/lib/summary-helpter";
-
+import { parseEmojiPoint, parsePoint } from "@/utils/summary-helpter";
 const EmojiPoint = ({ point }: { point: string }) => {
   const { emoji, text } = parseEmojiPoint(point) ?? {};
   return (

@@ -21,7 +21,7 @@ export default function SummaryHeader({
           font-medium bg-white/90 backdrop-blur-xs rounded-full hover:bg-white/90
           transition-all duration-200 shadow-xs hover:shadow-md"
           >
-            <Sparkles className="h-4 w-4 mr-1.5 text-rose-500" />
+            <Sparkles className="h-4 w-4 mr-1.5 text-rose-500 scale-175" />
             AI Summary
           </Badge>
           <div className="flex items-center gap-2 text-sm text-muted-foreground">

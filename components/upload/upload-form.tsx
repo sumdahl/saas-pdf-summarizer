@@ -9,7 +9,7 @@ import {
   storePdfSummaryAction,
 } from "@/actions/upload-action";
 import { useRef, useState } from "react";
-import { Search } from "lucide-react";
+// import { Search } from "lucide-react";
 
 const SIZE = 20 * 1024 * 1024; // 20MB
 
