@@ -1,32 +1,30 @@
-// components/common/Loading.tsx
 "use client";
 
 import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 export default function Loading() {
-  const [loading, setLoading] = useState(false);
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    const handleStart = () => setLoading(true);
-    const handleComplete = () => setLoading(false);
-
-    handleStart();
+    // Trigger loading on route or query param change
+    setIsLoading(true);
 
     const timer = setTimeout(() => {
-      handleComplete();
-    }, 300);
+      setIsLoading(false);
+    }, 300); // slight delay for smoother transition
 
     return () => clearTimeout(timer);
-  }, [pathname, searchParams]);
+  }, [pathname, searchParams.toString()]);
+  // 👆 .toString() — important: avoid stale objects triggering unnecessary re-renders
 
-  if (!loading) return null;
+  if (!isLoading) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-white bg-opacity-60 z-50">
-      <div className="w-14 h-14 border-4 border-rose-200 border-t-rose-500 rounded-full loader-spin"></div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/60">
+      <div className="h-14 w-14 animate-spin rounded-full border-4 border-rose-200 border-t-rose-500"></div>
     </div>
   );
 }
