@@ -2,7 +2,7 @@
 import { generateSummaryFromGemini } from "@/lib/gemini";
 import { fetchAndExtractPdfText } from "@/lib/langchain";
 import { getDatabaseConnection } from "@/lib/neondb";
-import { generateSummaryFromOpenAI } from "@/lib/openai";
+// import { generateSummaryFromOpenAI } from "@/lib/openai";
 import { formatFileNameAsTitle } from "@/utils/formatFile";
 import { auth } from "@clerk/nextjs/server";
 import { revalidatePath } from "next/cache";
@@ -43,48 +43,22 @@ export async function generateSummarizedPdf(
 
   try {
     const pdfText = await fetchAndExtractPdfText(pdfUrl);
+    // Handle the fallback for GEMINI API
 
     try {
-      const summary = await generateSummaryFromOpenAI(pdfText);
-      if (!summary) {
-        return {
-          success: false,
-          message: "Unable to summarize pdf text.",
-          data: null,
-        };
-      }
-
+      const summary = await generateSummaryFromGemini(pdfText);
       const formattedFileName = formatFileNameAsTitle(pdfName);
       return {
         success: true,
-        message: "PDF summarized successfully.",
+        message: "PDF summarized successfully with Gemini.",
         data: {
           title: formattedFileName,
           summary,
         },
       };
-    } catch (error) {
-      console.error(error);
-
-      // Handle the fallback for GEMINI API
-      if (error instanceof Error && error.message === "RATE_LIMIT_EXCEEDED") {
-        try {
-          const summary = await generateSummaryFromGemini(pdfText);
-          const formattedFileName = formatFileNameAsTitle(pdfName);
-          return {
-            success: true,
-            message: "PDF summarized successfully with Gemini.",
-            data: {
-              title: formattedFileName,
-              summary,
-            },
-          };
-        } catch (geminiError) {
-          console.error("Error generating summary from Gemini", geminiError);
-          throw new Error("Unable to generate summary with AI");
-        }
-      }
-      throw error;
+    } catch (geminiError) {
+      console.error("Error generating summary from Gemini", geminiError);
+      throw new Error("Unable to generate summary with AI");
     }
   } catch (error) {
     return {
